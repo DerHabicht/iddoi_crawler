@@ -7,7 +7,7 @@ $iddolSite = "http://www.doi.idaho.gov/insurance/IndividualList.aspx?Name=&nopag
 
 $mainList = getHTML($iddolSite);
 @lic = getLicenseList($mainList);
-#collectData($lic[0]);
+collectData($lic[0]);
 
 ### SUBROUTINES ###
 
@@ -26,10 +26,14 @@ sub getLicenseList
 +	return @licenseList;
 }
 
-#sub collectData
-#{
-#	my ($agentLic) = @_;
-#	my $agentURL = "http://www.doi.idaho.gov/insurance/AgentDetail.aspx?lic_no=$agentLic";
-#	my $agentData = getHTML($agentLic);
-#	
-#}
+sub collectData
+{
+	my ($agentLic) = @_;
+	my $agentURL = "http://www.doi.idaho.gov/insurance/AgentDetail.aspx?lic_no=$agentLic";
+	my $agentData = getHTML($agentURL);
+	
+	$agentData =~ /\s*<B>Name:<\/B>.*\n.*\n\s*<.*>(.*)<.*>/;
+	my $name = $1;
+	
+	print "$name\n";	
+}
