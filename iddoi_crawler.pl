@@ -45,6 +45,8 @@ sub collectData
 	my $agentURL = "http://www.doi.idaho.gov/insurance/AgentDetail.aspx?lic_no=$license";
 	my $agentData = getHTML($agentURL);
 	
+	# Extract personal agent information.
+	
 	$agentData =~ 	m{
 					\s*<B>Name:</B>.*\n				# Agent's name
 					.*\n
@@ -91,14 +93,36 @@ sub collectData
 					\s*<.*>(.*)<.*>(.*)<.*>			# License status and type:
 					}x;								# $11 and $12
 	
+	# Keep extracted information.
 	my $name = "$2 $1";
-	my $address = "$3 $4 $6 $7";
+	my $address = "\"$3, $4, $6, $7\"";
 	my $npn = $5;
 	my $issued = $8;
 	my $expires = $9;
 	my $phone = $10;
 	my $status = $11;
 	my $type = $12;
+	
+	# Get lines of business
+	
+	#@linesOfBusiness = (
+		$agentData =~	m{
+							\s*<TR>\n
+								\s*<td>(.*)</td>.*\n
+								\s*<td>.*</td>.*\n
+								\s*<td>.*</td>.*\n
+								\s*<td>.*</td>.*\n
+								\s*<td>.*</td>.*\n
+							\s*</TR>\n
+						}xgc;
+	#);
+	
+	print "$1\n";
+	
+	#foreach $businessLine (@linesOfBusiness)
+	#{
+	#	print $businessLine;
+	#}
 	
 	# Add to the CSV file with column order:
 	# Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type
