@@ -9,8 +9,11 @@ $csvFile = "Name, Address, Business Phone, License Number, NPN, Issued, Expires,
 ### Main Routine ###
 
 $iddolSiteContent = getHTML($iddolSiteURL);	# Get the main IDDOL page.
-@lic = getLicenseList($iddolSiteContent);	# Extract license ids.
-collectData($lic[0]);						# Extract the first line (DEBUG ONLY)
+@licenseList = getLicenseList($iddolSiteContent);	# Extract license ids.
+foreach $licenseNum (@licenseList)
+{
+	collectData($licenseNum);				# Extract agent data
+}
 writeFile();								# Make the .csv file.
 
 ### SUBROUTINES ###
@@ -95,7 +98,7 @@ sub collectData
 					}x;								# $11 and $12
 	
 	# Keep extracted information.
-	my $name = "$2 $1";
+	my $name = "\"$1, $2\"";
 	my $address = "\"$3, $4, $6, $7\"";
 	my $npn = $5;
 	my $issued = $8;
@@ -129,8 +132,6 @@ sub collectData
 	# Add to the CSV file with column order:
 	# Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type, Business Lines
 	$csvFile = "$csvFile$name, $address, $phone, $license, $npn, $issued, $expires, $status, $type, $lines\n";
-	
-	print $csvFile;
 }
 
 sub writeFile
