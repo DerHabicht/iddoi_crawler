@@ -6,11 +6,12 @@ use LWP::Simple;
 $iddolSiteURL = "http://www.doi.idaho.gov/insurance/IndividualList.aspx?Name=&nopages=YES";
 $csvFile = "Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type, Business Lines\n";
 
-### Main Procedure ###
+### Main Routine ###
 
 $iddolSiteContent = getHTML($iddolSiteURL);	# Get the main IDDOL page.
 @lic = getLicenseList($iddolSiteContent);	# Extract license ids.
 collectData($lic[0]);						# Extract the first line (DEBUG ONLY)
+writeFile();								# Make the .csv file.
 
 ### SUBROUTINES ###
 
@@ -130,4 +131,11 @@ sub collectData
 	$csvFile = "$csvFile$name, $address, $phone, $license, $npn, $issued, $expires, $status, $type, $lines\n";
 	
 	print $csvFile;
+}
+
+sub writeFile
+{
+	open AGENTFILE, ">/home/the-hawk/iddoi_crawler/idagents.csv";
+	print AGENTFILE $csvFile;
+	close AGENTFILE;
 }
