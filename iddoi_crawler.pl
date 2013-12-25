@@ -4,7 +4,7 @@
 use LWP::Simple;
 
 $iddolSiteURL = "http://www.doi.idaho.gov/insurance/IndividualList.aspx?Name=&nopages=YES";
-$csvFile = "Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type\n";
+$csvFile = "Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type, Business Lines\n";
 
 ### Main Procedure ###
 
@@ -105,28 +105,29 @@ sub collectData
 	
 	# Get lines of business
 	
-	#@linesOfBusiness = (
+	@linesOfBusiness = (
 		$agentData =~	m{
-							\s*<TR>\n
-								\s*<td>(.*)</td>.*\n
-								\s*<td>.*</td>.*\n
-								\s*<td>.*</td>.*\n
-								\s*<td>.*</td>.*\n
-								\s*<td>.*</td>.*\n
-							\s*</TR>\n
-						}xgc;
-	#);
+						\s*<TR>.*\n
+						\s*<td>(.*)</td>.*\n
+						.*\n
+						.*\n
+						.*\n
+						.*\n
+						\s*</TR>.*\n
+						}xgc
+	);
+		
+	# Concat the lines of business together.
 	
-	print "$1\n";
-	
-	#foreach $businessLine (@linesOfBusiness)
-	#{
-	#	print $businessLine;
-	#}
+	my $lines = "";
+	foreach $businessLine (@linesOfBusiness)
+	{
+		$lines = "$lines$businessLine, ";
+	}
 	
 	# Add to the CSV file with column order:
-	# Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type
-	$csvFile = "$csvFile$name, $address, $phone, $license, $npn, $issued, $expires, $status, $type \n";
+	# Name, Address, Business Phone, License Number, NPN, Issued, Expires, Status, Type, Business Lines
+	$csvFile = "$csvFile$name, $address, $phone, $license, $npn, $issued, $expires, $status, $type, $lines\n";
 	
 	print $csvFile;
 }
