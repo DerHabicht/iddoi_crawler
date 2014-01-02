@@ -151,7 +151,7 @@ sub collectData
 
 sub writeFile
 {
-	open AGENTFILE, ">/home/the-hawk/iddoi_crawler/idagents.csv";
+	open AGENTFILE, ">>/home/the-hawk/iddoi_crawler/idagents.csv";
 	print AGENTFILE $csvFile;
 	close AGENTFILE;
 }
