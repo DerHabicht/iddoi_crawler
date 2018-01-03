@@ -1,7 +1,10 @@
-BMcKellar
-=========
+iddoi_crawler
+=============
 
-Scripts developed for a private agreement with Brian McKellar.
+This is a quick and dirty Perl script that I wrote for an acquaintance to
+scrape information about insurance agents registered with the Idaho Department
+of Insurance. I make no promises about it being good, effective, and I
+certainly don't promise that it won't blow anything up.
 
 Dependencies
 ============
